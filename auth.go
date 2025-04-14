@@ -22,7 +22,12 @@ func GenerateToken(username string)(string, error){
 }
 func AuthMiddleware() gin.HandlerFunc{
 	return func(c *gin.Context) {
-		tokenStr := c.GetHeader("Authorization")
+		tokenStr, err := c.Cookie("auth_token")
+		if err != nil{
+			c.JSON(401, gin.H{"error": "Token tidak ditemukan di cookies"})
+			c.Abort()
+			return
+		}
 
 		if tokenStr == ""{
 			c.JSON(401,gin.H{"error": "Token tidak ada"})

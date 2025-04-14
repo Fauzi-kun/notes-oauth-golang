@@ -68,11 +68,8 @@ func main() {
 			return
 		}
 
-		// Kirim JWT ke client
-		c.JSON(200,gin.H{
-			"token":jwtToken,
-			"user": userInfo,
-		})
+		c.SetCookie("auth_token", jwtToken, 3600 * 24, "/", "localhost", false, true)
+		c.JSON(200, gin.H{"message": "Login via GitHub berhasil", "username": username})
 
 	})
 	r.GET("/profile",AuthMiddleware(),func(c *gin.Context) {
